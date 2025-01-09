@@ -52,20 +52,25 @@ const GameController = (() => {
         currentTurn = currentTurn === "X" ? "O" : "X";
     };
 
+    
     const playTurn = (row, col) => {
         const board = Gameboard.getBoard();
+        const result = document.querySelector("#result");
 
         if (board[row][col] !== "") {
-            console.log("Cell is already taken. Choose another!")
+            result.textContent = "Cell is already taken. Choose another!";
             return;
         }
 
         Gameboard.setBoardVal(row, col, currentTurn);
 
         const winner = checkWinner(Gameboard.getBoard());
-        if (winner){
-            console.log(`Game over! Winner: ${winner}`);
+        if (winner === "tie"){
+            result.textContent = "It's a tie!";
             Gameboard.resetBoard(); 
+        } else if (winner) {
+            result.textContent = `Game over! Winner: ${winner}`;
+            Gameboard.resetBoard();
         } else {
             switchTurn();
         }
@@ -100,7 +105,7 @@ const GameController = (() => {
     // Check for tie
     const isFull = board.every(row => row.every(cell => cell !== ""));
     if (!winner && isFull) {
-        return "It's a tie!";
+        return "tie";
     }
 
     return winner;
@@ -109,4 +114,45 @@ const GameController = (() => {
     return { startGame, playTurn };
 
 })();
+
+const DisplayController = (() => {
+    const gameContainer = document.getElementById("game-container");
+
+    const renderGameboard = () => {
+        gameContainer.innerHTML = "";
+
+        const board = Gameboard.getBoard();
+
+        // Create the grid dynamically
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell,colIndex) => {
+                const cellDiv = document.createElement("div");
+                cellDiv.classList.add("cell");
+                cellDiv.textContent = cell;
+
+                // Add an eventlistener to allow user interaction
+                cellDiv.addEventListener("click", () => {
+                    handleCellClick(rowIndex, colIndex);
+                });
+                gameContainer.appendChild(cellDiv);
+            });
+        });
+    };
+
+    const handleCellClick = (row, col) => {
+        // Pass the row and column to the GameController's `playTurn` method
+        GameController.playTurn(row, col);
+
+        // Re-render the board to reflect changes
+        renderGameboard();
+    };
+
+    return { renderGameboard, handleCellClick };
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+    GameController.startGame(); // Ensure everything is ready after the DOM is loaded
+    DisplayController.renderGameboard();
+});
+
 
