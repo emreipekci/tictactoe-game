@@ -39,14 +39,39 @@ const Player = (name, marker) => {
 /*
 ** The GameController
 */
-const GameController = () => {
+const GameController = (() => {
     let currentTurn = "X";
 
-    function switchTurn() {
+    const startGame = () => {
+        console.log("Game has started!"); // Initialize game state
+        Gameboard.resetBoard();
+        currentTurn = "X"; 
+    };
+
+    const switchTurn = () => {
         currentTurn = currentTurn === "X" ? "O" : "X";
+    };
+
+    const playTurn = (row, col) => {
+        const board = Gameboard.getBoard();
+
+        if (board[row][col] !== "") {
+            console.log("Cell is already taken. Choose another!")
+            return;
+        }
+
+        Gameboard.setBoardVal(row, col, currentTurn);
+
+        const winner = checkWinner(Gameboard.getBoard());
+        if (winner){
+            console.log(`Game over! Winner: ${winner}`);
+            Gameboard.resetBoard(); 
+        } else {
+            switchTurn();
+        }
     }
 
-    function checkWinner(board) {
+    const checkWinner = (board) => {
         const size = board.length; // Assuming a 3x3 board
         let winner = null;
 
@@ -81,9 +106,7 @@ const GameController = () => {
     return winner;
     }
 
-    function startGame() {
-        console.log("Game has started!");
-        // Initialize game state
-    } 
-};
+    return { startGame, playTurn };
+
+})();
 
