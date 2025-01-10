@@ -1,9 +1,24 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    gap: 15px;   
+}
+
 #game-container {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
     gap: 5px;
 }
+
 .cell {
     display: flex;
     align-items: center;
@@ -13,12 +28,26 @@
     cursor: pointer;
     background-color: #922a2a;
 }
+
 .cell:hover {
     background-color: #e0e0e0;
 }
 
+.button {
+    background-color: rgb(173, 197, 205);
+    color: white;
+    font-weight: 600;
+    border: none;
+    min-width: 100px;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
 #result {
     font-size: 30px;
-    margin-top: 20px;
-    
+    margin-top: 20px;   
+}
+
+.footer {
+    margin-top: 100px;
 }
