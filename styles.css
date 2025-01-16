@@ -2,6 +2,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    background-color: #040404;
 }
 
 body {
@@ -9,14 +10,21 @@ body {
     flex-direction: column;
     justify-content: center; 
     align-items: center;
-    gap: 15px;   
+    gap: 15px;
+    font-family: sans-serif; 
+    color: azure;  
+}
+
+h1 {
+    color: rgb(164, 194, 194);
 }
 
 #game-container {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
-    gap: 5px;
+    gap: 4px;
+    margin-top: 10px;
 }
 
 .cell {
@@ -26,21 +34,25 @@ body {
     font-size: 24px;
     border: 1px solid #000;
     cursor: pointer;
-    background-color: #922a2a;
+    background-color: #434343;
 }
 
 .cell:hover {
     background-color: #e0e0e0;
 }
 
-.button {
-    background-color: rgb(173, 197, 205);
+.button-start {
+    background-color: rgb(164, 194, 194);
     color: white;
     font-weight: 600;
     border: none;
     min-width: 100px;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 5px;   
+}
+
+.button-start:hover {
+    background-color: rgb(148, 193, 193);
 }
 
 #result {
@@ -50,4 +62,9 @@ body {
 
 .footer {
     margin-top: 100px;
+}
+
+.footer-link {
+    color: rgb(164, 194, 194);
+    text-decoration: none;
 }

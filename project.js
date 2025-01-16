@@ -30,22 +30,18 @@ const Gameboard = (() => {
 })();
 
 /*
-** The Player 
-*/
-const Player = (name, marker) => {
-    return {name, marker};
-};
-
-/*
 ** The GameController
 */
 const GameController = (() => {
     let currentTurn = "X";
+    let gameActive = true;
 
     const startGame = () => {
         console.log("Game has started!"); // Initialize game state
         Gameboard.resetBoard();
+        gameActive = true;
         currentTurn = "X"; 
+        result.textContent = "";
     };
 
     const switchTurn = () => {
@@ -54,6 +50,7 @@ const GameController = (() => {
 
     
     const playTurn = (row, col) => {
+        if (!gameActive) return; // Ignore clicks if the game is over
         const board = Gameboard.getBoard();
         const result = document.querySelector("#result");
 
@@ -67,14 +64,54 @@ const GameController = (() => {
         const winner = checkWinner(Gameboard.getBoard());
         if (winner === "tie"){
             result.textContent = "It's a tie!";
-            Gameboard.resetBoard(); 
+             
         } else if (winner) {
             result.textContent = `Game over! Winner: ${winner}`;
-            Gameboard.resetBoard();
+            gameActive = false; // End the game
+
+        } else {
+            switchTurn();
+            if (currentTurn === "O" && gameActive) {
+                computerMove(); // Trigger the computer's move
+            }
+        }
+    };
+
+    const computerMove = () => {
+        const board = Gameboard.getBoard();
+        const emptyCells = [];
+    
+        // Find all empty cells
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+                if (board[row][col] === "") {
+                    emptyCells.push({ row, col });
+                }
+            }
+        }
+    
+        // Choose a random empty cell
+        const randomIndex = Math.floor(Math.random() * emptyCells.length);
+        const { row, col } = emptyCells[randomIndex];
+    
+        // Make the move
+        Gameboard.setBoardVal(row, col, "O");
+    
+        // Check for a winner
+        const winner = checkWinner(board);
+        if (winner === "tie") {
+            document.querySelector("#result").textContent = "It's a tie!";
+            gameActive = false;
+        } else if (winner) {
+            document.querySelector("#result").textContent = `Game over! Winner: ${winner}`;
+            gameActive = false;
         } else {
             switchTurn();
         }
-    }
+    
+        DisplayController.renderGameboard();
+    };
+    
 
     const checkWinner = (board) => {
         const size = board.length; // Assuming a 3x3 board
@@ -107,7 +144,6 @@ const GameController = (() => {
     if (!winner && isFull) {
         return "tie";
     }
-
     return winner;
     }
 
@@ -150,9 +186,17 @@ const DisplayController = (() => {
     return { renderGameboard, handleCellClick };
 })();
 
+// Ensure everything is ready after the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
-    GameController.startGame(); // Ensure everything is ready after the DOM is loaded
+    GameController.startGame(); 
     DisplayController.renderGameboard();
 });
+
+// Start button
+document.querySelector(".button-start").addEventListener("click", () =>{
+    GameController.startGame();
+    DisplayController.renderGameboard();
+});
+
 
 
